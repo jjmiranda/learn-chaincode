@@ -22,7 +22,7 @@ package main
 import (
 	"errors"
 	"fmt"
-	"strconv"
+	// "strconv"
 	"encoding/json"
 	"time"
 	"strings"
@@ -81,10 +81,6 @@ func (t *MagiaChaincode) Invoke(stub shim.ChaincodeStubInterface, function strin
 	// Handle different functions
 	if function == "init" {													//initialize the chaincode state, used as reset
 		return t.Init(stub, "init", args)
-	} else if function == "delete" {										//deletes an entity from its state
-		res, err := t.Delete(stub, args)
-		cleanTrades(stub)													//lets make sure all open trades are still valid
-		return res, err
 	} else if function == "write" {											//writes a value to the chaincode state
 		return t.Write(stub, args)
 	} else if function == "registra_precioso" {								//Registra evento de entrada/salida de Precioso
@@ -182,15 +178,15 @@ func (t *MagiaChaincode) registra_precioso(stub shim.ChaincodeStubInterface, arg
 	
 	//build the Registro and covert to json bytes
 	res := Registro{}
-	res.Id := args[0]
-	res.Carcel := strings.ToLower(args[1])
-	res.Entrada := args[2]
-	res.Salida := args[3]
+	res.Id = args[0]
+	res.Carcel = strings.ToLower(args[1])
+	res.Entrada = args[2]
+	res.Salida = args[3]
 	jsonAsBytes, err := json.Marshal(res)
 	if err != nil {
 		return nil, err
 	}
-	err = stub.PutState(res.id, jsonAsBytes)
+	err = stub.PutState(res.Id, jsonAsBytes)
 	if err != nil {
 		return nil, err
 	}
