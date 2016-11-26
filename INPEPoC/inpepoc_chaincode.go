@@ -89,18 +89,6 @@ func (t *MagiaChaincode) Invoke(stub shim.ChaincodeStubInterface, function strin
 		return t.Write(stub, args)
 	} else if function == "registra_precioso" {								//Registra evento de entrada/salida de Precioso
 		return t.registra_precioso(stub, args)
-	} else if function == "set_user" {										//change owner of a marble
-		res, err := t.set_user(stub, args)
-		cleanTrades(stub)													//lets make sure all open trades are still valid
-		return res, err
-	} else if function == "open_trade" {									//create a new trade order
-		return t.open_trade(stub, args)
-	} else if function == "perform_trade" {									//forfill an open trade order
-		res, err := t.perform_trade(stub, args)
-		cleanTrades(stub)													//lets clean just in case
-		return res, err
-	} else if function == "remove_trade" {									//cancel an open trade order
-		return t.remove_trade(stub, args)
 	}
 	fmt.Println("invoke did not find func: " + function)					//error
 
