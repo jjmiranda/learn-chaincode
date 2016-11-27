@@ -160,11 +160,13 @@ func (t *MagiaChaincode) Write(stub shim.ChaincodeStubInterface, args []string) 
 // ============================================================================================================================
 func (t *MagiaChaincode) registra_precioso(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	var err error
+	var strerr string
 
-	//   0      1         2         3                4
+	//   0      1           2              3                4
 	// "id", "carcel", "tipo: [i/s]", fecha ingreso", "fecha salida"
 	if len(args) != 5 {
-		return nil, errors.New("Incorrect number of arguments. Expecting exactly 5")
+		strerr = "Incorrect number of arguments. Expecting exactly 5"
+		return []byte("error:" + strerr), errors.New(strerr)
 	}
 
 	//input sanitation
@@ -181,7 +183,7 @@ func (t *MagiaChaincode) registra_precioso(stub shim.ChaincodeStubInterface, arg
 	if len(args[3]) <= 0 {
 		return nil, errors.New("4th argument must be a non-empty string")
 	}
-	if len(args[4]) <= 0 {
+	if args[2]=="s" && len(args[4]) <= 0 {
 		return nil, errors.New("5th argument must be a non-empty string")
 	}
 	//TODO Verificar que el formato de entrada y salida son en formato de fecha.
