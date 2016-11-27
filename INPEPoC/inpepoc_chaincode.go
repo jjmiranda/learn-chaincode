@@ -100,6 +100,8 @@ func (t *MagiaChaincode) Query(stub shim.ChaincodeStubInterface, function string
 	// Handle different functions
 	if function == "read" {													//read a variable
 		return t.read(stub, args)
+	} else if function =="keys"{													//read a variable
+		return t.keys(stub, args)
 	}
 	fmt.Println("query did not find func: " + function)						//error
 
@@ -196,7 +198,6 @@ func (t *MagiaChaincode) registra_precioso(stub shim.ChaincodeStubInterface, arg
 }
 
 func (t *MagiaChaincode) keys(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
-	function, args := stub.GetFunctionAndParameters()
 	if len(args) < 2 {
 			return nil, errors.New("get operation must include two argument, key and key???")
 	}
