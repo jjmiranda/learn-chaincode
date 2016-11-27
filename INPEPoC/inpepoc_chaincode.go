@@ -34,11 +34,16 @@ import (
 type MagiaChaincode struct {
 }
 
-type Registro struct{
-	Id 		string `json:"id"`					//El identificador del precioso
-	Carcel 	string `json:"carcel"`
-	Entrada string `json:"entrada"`
-	Salida 	string `json:"salida"`
+type Preso struct {
+	Id        string     `json:"id"`		//El identificador del precioso
+	Historial []Historia `json:"historial"`		//El historial de entradas y salidas de la carcel
+}
+
+type Historia struct {
+	Carcel       string `json:"carcel"`
+	Tipo         string `json:"tipo"`          	//i:Ingreso, s:Salida
+	FechaIngreso string `json:"fecha_ingreso"` 	//Fecha de ingreso a la carcel. Format RFC3339 - "2016-11-20T22:08:40-05:00"
+	FechaSalida  string `json:"fecha_salida"`	//Fecha de salida a la carcel.
 }
 
 // ============================================================================================================================
@@ -156,10 +161,10 @@ func (t *MagiaChaincode) Write(stub shim.ChaincodeStubInterface, args []string) 
 func (t *MagiaChaincode) registra_precioso(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	var err error
 
-	//   0      1            2                3
-	// "id", "carcel", "fecha entrada", "fecha salida"
-	if len(args) != 4 {
-		return nil, errors.New("Incorrect number of arguments. Expecting 4")
+	//   0      1         2         3                4
+	// "id", "carcel", "tipo", fecha entrada", "fecha salida"
+	if len(args) != 5 {
+		return nil, errors.New("Incorrect number of arguments. Expecting exactly 5")
 	}
 
 	//input sanitation
@@ -176,19 +181,33 @@ func (t *MagiaChaincode) registra_precioso(stub shim.ChaincodeStubInterface, arg
 	if len(args[3]) <= 0 {
 		return nil, errors.New("4th argument must be a non-empty string")
 	}
+	if len(args[4]) <= 0 {
+		return nil, errors.New("5th argument must be a non-empty string")
+	}
 	//TODO Verificar que el formato de entrada y salida son en formato de fecha.
 	
-	//build the Registro and covert to json bytes
-	res := Registro{}
-	res.Id = args[0]
-	res.Carcel = strings.ToLower(args[1])
-	res.Entrada = args[2]
-	res.Salida = args[3]
-	jsonAsBytes, err := json.Marshal(res)
+	//Trae y verifica si existe el Id del preso en el registro para utilizarlo.
+	//get the open trade struct
+	presoAsBytes, err := stub.GetState(args[0])
+	if err != nil {
+		preso := Preso{}
+	} else {
+		var preso Preso
+		json.Unmarshal(presoAsBytes, &preso)	
+	}
+	preso.Id = args[0]
+	hist := Historia{}
+	hist.Carcel = strings.ToLower(args[1])
+	hist.Tipo = strings.ToLower(args[2])
+	hist.FechaIngreso = args[3]
+	hist.FechaSalida = args[4]
+	preso.Historial = append(preso.Historial,hist)
+
+	jsonAsBytes, err := json.Marshal(preso)
 	if err != nil {
 		return nil, err
 	}
-	err = stub.PutState(res.Id, jsonAsBytes)
+	err = stub.PutState(preso.Id, jsonAsBytes)
 	if err != nil {
 		return nil, err
 	}
