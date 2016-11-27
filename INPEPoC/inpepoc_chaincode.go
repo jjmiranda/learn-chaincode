@@ -189,8 +189,8 @@ func (t *MagiaChaincode) registra_precioso(stub shim.ChaincodeStubInterface, arg
 	//Trae y verifica si existe el Id del preso en el registro para utilizarlo.
 	//get the open trade struct
 	presoAsBytes, err := stub.GetState(args[0])
-	fmt.Println("--- presoAsBytes: " + presoAsBytes)
-	fmt.Println("--- err: " + err)
+	fmt.Println("--- presoAsBytes: ", presoAsBytes)
+	fmt.Println("--- err: ", err)
 	var preso Preso
 	if err != nil {
 		return nil, errors.New("Failed to get preso: " + args[0])
