@@ -162,7 +162,7 @@ func (t *MagiaChaincode) registra_precioso(stub shim.ChaincodeStubInterface, arg
 	var err error
 
 	//   0      1         2         3                4
-	// "id", "carcel", "tipo", fecha entrada", "fecha salida"
+	// "id", "carcel", "tipo: [i/s]", fecha ingreso", "fecha salida"
 	if len(args) != 5 {
 		return nil, errors.New("Incorrect number of arguments. Expecting exactly 5")
 	}
@@ -189,6 +189,8 @@ func (t *MagiaChaincode) registra_precioso(stub shim.ChaincodeStubInterface, arg
 	//Trae y verifica si existe el Id del preso en el registro para utilizarlo.
 	//get the open trade struct
 	presoAsBytes, err := stub.GetState(args[0])
+	fmt.Println("--- presoAsBytes: ", presoAsBytes)
+	fmt.Println("--- err: ", err)
 	if err != nil {
 		preso := Preso{}
 	} else {
