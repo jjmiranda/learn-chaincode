@@ -195,6 +195,34 @@ func (t *MagiaChaincode) registra_precioso(stub shim.ChaincodeStubInterface, arg
 	return nil, nil
 }
 
+func (t *MagiaChaincode) keys(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	function, args := stub.GetFunctionAndParameters()
+	if len(args) < 2 {
+			return nil, errors.New("get operation must include two argument, key and key???")
+	}
+	keysIter, err := stub.RangeQueryState(args[0], args[1])
+	if err != nil {
+		return nil, fmt.Errorf("keys operation failed. Error accessing state: %s", err)
+	}
+	defer keysIter.Close()
+
+	var keys []string
+	for keysIter.HasNext() {
+		key, _, iterErr := keysIter.Next()
+		if iterErr != nil {
+			return nil, fmt.Errorf("keys operation failed. Error accessing state: %s", err)
+		}
+		keys = append(keys, key)
+	}
+
+	jsonKeys, err := json.Marshal(keys)
+	if err != nil {
+		return nil, fmt.Errorf("keys operation failed. Error marshaling JSON: %s", err)
+	}
+
+	return jsonKeys, nil
+}
+
 // ============================================================================================================================
 // Make Timestamp - create a timestamp in ms
 // ============================================================================================================================
