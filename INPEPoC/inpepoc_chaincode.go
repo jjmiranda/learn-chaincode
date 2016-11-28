@@ -163,7 +163,7 @@ func (t *MagiaChaincode) registra_precioso(stub shim.ChaincodeStubInterface, arg
 	var strerr string
 
 	//   0      1           2              3                4
-	// "id", "carcel", "tipo: [i/s]", fecha ingreso", "fecha salida"
+	// "id", "carcel", "tipo: [i/s]", "fecha ingreso", "fecha salida"
 	if len(args) != 5 {
 		strerr = "Incorrect number of arguments. Expecting exactly 5"
 		return []byte("error:" + strerr), errors.New(strerr)
