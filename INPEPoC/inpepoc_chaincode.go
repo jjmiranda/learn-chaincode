@@ -35,7 +35,7 @@ type MagiaChaincode struct {
 }
 
 type Preso struct {
-	Id        string     `json:"id"`		//El identificador del precioso
+	Id        string     `json:"id"`			//El identificador del precioso
 	Historial []Historia `json:"historial"`		//El historial de entradas y salidas de la carcel
 }
 
@@ -103,8 +103,8 @@ func (t *MagiaChaincode) Query(stub shim.ChaincodeStubInterface, function string
 	fmt.Println("query is running " + function)
 
 	// Handle different functions
-	if function == "read" {													//read a variable
-		return t.read(stub, args)
+	if function == "lee_historial" {													//read a variable
+		return t.lee_historial(stub, args)
 	} else if function =="keys"{													//read a variable
 		return t.keys(stub, args)
 	}
@@ -116,7 +116,7 @@ func (t *MagiaChaincode) Query(stub shim.ChaincodeStubInterface, function string
 // ============================================================================================================================
 // Read - read a variable from chaincode state
 // ============================================================================================================================
-func (t *MagiaChaincode) read(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+func (t *MagiaChaincode) lee_historial(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	var name, jsonResp string
 	var err error
 
